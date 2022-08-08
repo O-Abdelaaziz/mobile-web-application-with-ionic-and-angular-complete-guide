@@ -5,7 +5,13 @@ const clearBtn = document.querySelector("#btn-clear");
 
 
 saveBtn.addEventListener('click', () => {
-    console.log('save btn clicked');
+    const enteredReasonInput = reasonInput.value;
+    const enteredAmountInput = amountInput.value;
+
+    if (enteredReasonInput.trim().length <= 0 || enteredAmountInput.trim().length <= 0 || enteredAmountInput <= 0) {
+        return;
+    }
+    console.log(enteredReasonInput, enteredAmountInput);
 });
 
 clearBtn.addEventListener('click', () => {

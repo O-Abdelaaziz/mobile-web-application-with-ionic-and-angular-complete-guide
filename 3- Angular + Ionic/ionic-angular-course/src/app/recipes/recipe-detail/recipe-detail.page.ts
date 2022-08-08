@@ -26,6 +26,7 @@ export class RecipeDetailPage implements OnInit {
   getRecipeDetails() {
     this._activatedRoute.paramMap.subscribe(parameter => {
       if (!parameter.has('recipeId')) {
+        this._router.navigate(['/recipes']);
         return;
       }
       const recipeId = parameter.get('recipeId');
@@ -35,7 +36,7 @@ export class RecipeDetailPage implements OnInit {
 
   deleteRecipe(id: string) {
     this._alertController.create({
-      header: "Delete",
+      header: 'Delete',
       subHeader: 'Are you sure?',
       message: 'Do you really want to delete this recipe.',
       buttons: [{
@@ -44,7 +45,7 @@ export class RecipeDetailPage implements OnInit {
       },
         {
           text: 'Delete',
-          handler:()=>{
+          handler: () => {
             this._recipesService.deleteRecipe(this.recipe.id);
             this._router.navigate(['/recipes']);
           }

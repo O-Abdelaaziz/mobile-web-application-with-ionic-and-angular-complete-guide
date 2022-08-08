@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { RecipesPageRoutingModule } from './recipes-routing.module';
+import {RecipesPageRoutingModule} from './recipes-routing.module';
 
-import { RecipesPage } from './recipes.page';
+import {RecipesPage} from './recipes.page';
 import {RouterModule} from '@angular/router';
+import {RecipeItemComponent} from './recipe-item/recipe-item.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {RouterModule} from '@angular/router';
     IonicModule,
     RouterModule
   ],
-  declarations: [RecipesPage]
+  declarations: [RecipesPage, RecipeItemComponent]
 })
-export class RecipesPageModule {}
+export class RecipesPageModule {
+}

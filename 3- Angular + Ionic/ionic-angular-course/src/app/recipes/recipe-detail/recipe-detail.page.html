@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/recipes"></ion-back-button>
     </ion-buttons>
     <ion-title>Recipe Detail</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteRecipe()">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <ion-title size="small">{{recipe.title}}</ion-title>

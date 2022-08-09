@@ -1,0 +1,9 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Recipes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-recipe-item *ngFor="let recipe of recipes" [recipeItem]="recipe"></app-recipe-item>
+</ion-content>

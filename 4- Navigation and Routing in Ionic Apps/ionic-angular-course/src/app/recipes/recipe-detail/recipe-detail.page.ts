@@ -21,6 +21,7 @@ export class RecipeDetailPage implements OnInit {
 
   ngOnInit() {
     this.getRecipeDetails();
+    console.log('LOADED Recipe Detail Page!');
   }
 
   getRecipeDetails() {

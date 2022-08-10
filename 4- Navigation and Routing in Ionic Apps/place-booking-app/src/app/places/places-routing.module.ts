@@ -9,8 +9,8 @@ const routes: Routes = [
     component: PlacesPage
   },
   {
-    path: 'dicover',
-    loadChildren: () => import('./dicover/dicover.module').then( m => m.DicoverPageModule)
+    path: 'discover',
+    loadChildren: () => import('./discover/discover.module').then(m => m.DiscoverPageModule)
   },
   {
     path: 'offers',

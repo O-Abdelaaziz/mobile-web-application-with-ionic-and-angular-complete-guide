@@ -26,7 +26,7 @@ export class AuthPage implements OnInit {
 
     const loading = await this._loadingController.create({
       message: 'Loading...',
-      duration: 3000,
+      duration: 1000,
       spinner: 'circles',
     });
 

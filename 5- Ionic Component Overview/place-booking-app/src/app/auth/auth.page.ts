@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from './authentication.service';
 import {Router} from "@angular/router";
+import {LoadingController} from "@ionic/angular";
 
 @Component({
   selector: 'app-auth',
@@ -12,6 +13,7 @@ export class AuthPage implements OnInit {
 
   constructor(
     private _authenticationService: AuthenticationService,
+    private _loadingController: LoadingController,
     private _router: Router) {
   }
 
@@ -22,9 +24,23 @@ export class AuthPage implements OnInit {
     this.isLoading = true;
     this._authenticationService.login();
 
-    setTimeout(() => {
+    const loading = await this._loadingController.create({
+      message: 'Loading...',
+      duration: 3000,
+      spinner: 'circles',
+    });
+
+    await loading.present();
+
+    if (await loading.onDidDismiss()) {
       this.isLoading = false;
-      this._router.navigateByUrl('/places/tabs/discover')
-    }, 5000);
+      await this._router.navigateByUrl('/places/tabs/discover')
+    }
+
+
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    //   this._router.navigateByUrl('/places/tabs/discover')
+    // }, 5000);
   }
 }

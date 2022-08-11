@@ -9,6 +9,7 @@ import {Place} from "../place.model";
 })
 export class DiscoverPage implements OnInit {
   public places: Place[] = [];
+  public loadedPlaces: Place[] = [];
 
   constructor(private _placesService: PlacesService) {
   }
@@ -19,6 +20,7 @@ export class DiscoverPage implements OnInit {
 
   onGetPlaces() {
     this.places = this._placesService.placesList;
+    this.loadedPlaces = this._placesService.placesList.slice(1);
     console.log(this.places);
   }
 }

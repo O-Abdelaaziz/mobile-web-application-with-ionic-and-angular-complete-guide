@@ -40,7 +40,7 @@ export class PlaceDetailPage implements OnInit {
       component: CreateBookingComponent,
       componentProps: {selectedPalace: this.place}
     });
-    model.present();
+   await model.present();
 
     const {data, role} = await model.onWillDismiss();
     console.log('Data: ', data, 'Role: ', role);

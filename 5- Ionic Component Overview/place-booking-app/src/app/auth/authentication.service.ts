@@ -4,7 +4,7 @@ import {Injectable} from '@angular/core';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private _userIsAuthenticated = true;
+  private _userIsAuthenticated = false;
 
   constructor() {
   }

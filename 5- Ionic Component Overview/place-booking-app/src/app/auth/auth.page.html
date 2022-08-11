@@ -9,5 +9,6 @@
     <ion-label position="floating">E-Mail</ion-label>
     <ion-input></ion-input>
   </ion-item>
-<ion-button color="primary" (click)="onLogin()">Login</ion-button>
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+  <ion-button color="primary" (click)="onLogin()" *ngIf="!isLoading">Login</ion-button>
 </ion-content>

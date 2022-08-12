@@ -11,6 +11,7 @@ import {NgForm} from "@angular/forms";
 })
 export class AuthPage implements OnInit {
   public isLoading = false;
+  public isLogin = false;
 
   constructor(
     private _authenticationService: AuthenticationService,
@@ -47,5 +48,9 @@ export class AuthPage implements OnInit {
 
   onSubmit(authForm: NgForm) {
 
+  }
+
+  onSwitchAuthMode() {
+    this.isLogin = !this.isLogin;
   }
 }

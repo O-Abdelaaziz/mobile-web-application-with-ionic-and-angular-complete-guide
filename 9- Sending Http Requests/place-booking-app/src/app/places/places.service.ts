@@ -5,47 +5,52 @@ import {BehaviorSubject} from 'rxjs';
 import {take, map, tap, delay, switchMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
+interface PlaceDate {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
   private readonly BASE_URL = 'https://ionic-angular-7efb9-default-rtdb.firebaseio.com/offered-places.json';
-  private places: BehaviorSubject<Place[]> = new BehaviorSubject<Place[]>([
-    new Place(
-      'p1',
-      'Manhattan Mansion',
-      'In the heart of New York City.',
-      'https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200',
-      149.99,
-      new Date('2022-08-12'),
-      new Date('2022-08-15'),
-      'user1'
-    ),
-    new Place(
-      'p2',
-      'L\'Amour Toujours',
-      'A romantic place in Paris!',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/1024px-Paris_Night.jpg',
-      189.99,
-      new Date('2022-08-12'),
-      new Date('2022-08-20'),
-      'user1'
-    ),
-    new Place(
-      'p3',
-      'The Foggy Palace',
-      'Not your average city trip!',
-      'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
-      99.99,
-      new Date('2022-08-12'),
-      new Date('2022-08-19'),
-      'user1'
-    )
-  ]);
+  private places: BehaviorSubject<Place[]> = new BehaviorSubject<Place[]>([]);
 
   constructor(
     private _httpClient: HttpClient,
     private _authService: AuthenticationService) {
+  }
+
+  fetchPlace() {
+    return this._httpClient.get<{ [key: string]: PlaceDate }>(this.BASE_URL).pipe(
+      map((response: any) => {
+        const places = [];
+        for (const key in response) {
+          if (response.hasOwnProperty(key)) {
+            places.push(new Place(
+              key,
+              response[key].title,
+              response[key].description,
+              response[key].imageUrl,
+              response[key].price,
+              new Date(response[key].availableFrom),
+              new Date(response[key].availableTo),
+              response[key].userId
+            ));
+          }
+        }
+        return places;
+      }),
+      tap((response) => {
+        this.places.next(response);
+      })
+    );
   }
 
   get placesList() {

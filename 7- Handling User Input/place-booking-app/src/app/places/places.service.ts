@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Place} from './place.model';
 import {AuthenticationService} from '../auth/authentication.service';
 import {BehaviorSubject} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {take, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +50,10 @@ export class PlacesService {
   }
 
   getPlace(placeId) {
-    //return {...this.places.find(place => place.id === placeId)};
+    return this.places.pipe(
+      take(1),
+      map((places) => ({...places.find(place => place.id === placeId)})),
+    );
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {

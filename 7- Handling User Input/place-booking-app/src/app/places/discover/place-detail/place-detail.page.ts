@@ -1,17 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActionSheetController, ModalController, NavController} from '@ionic/angular';
 import {CreateBookingComponent} from '../../../bookings/create-booking/create-booking.component';
 import {Place} from "../../place.model";
 import {PlacesService} from "../../places.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-place-detail',
   templateUrl: './place-detail.page.html',
   styleUrls: ['./place-detail.page.scss'],
 })
-export class PlaceDetailPage implements OnInit {
+export class PlaceDetailPage implements OnInit, OnDestroy {
   public place: Place | null = null;
+  private subscription: Subscription;
 
   constructor(
     private _placeService: PlacesService,
@@ -30,8 +32,12 @@ export class PlaceDetailPage implements OnInit {
           this._router.navigate(['/places/tabs/discover']);
           return;
         }
-        const placeId = params.get('placeId')
-        this.place = this._placeService.getPlace(placeId);
+        const placeId = params.get('placeId');
+        this.subscription = this._placeService.getPlace(placeId).subscribe(
+          (response) => {
+            this.place = response;
+          }
+        );
       }
     );
   }
@@ -87,6 +93,12 @@ export class PlaceDetailPage implements OnInit {
     console.log('Data: ', data, 'Role: ', role);
     if (role === 'confirm') {
       console.log('Booking Confirmed');
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 }

@@ -1,30 +1,22 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActionSheetController, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {ActionSheetController, ModalController, NavController} from '@ionic/angular';
 import {CreateBookingComponent} from '../../../bookings/create-booking/create-booking.component';
 import {Place} from "../../place.model";
 import {PlacesService} from "../../places.service";
-import {Subscription} from "rxjs";
-import {BookingService} from "../../../bookings/booking.service";
-import {AuthenticationService} from "../../../auth/authentication.service";
 
 @Component({
   selector: 'app-place-detail',
   templateUrl: './place-detail.page.html',
   styleUrls: ['./place-detail.page.scss'],
 })
-export class PlaceDetailPage implements OnInit, OnDestroy {
+export class PlaceDetailPage implements OnInit {
   public place: Place | null = null;
-  public isBookable = false;
-  private subscription: Subscription;
 
   constructor(
-    private _authenticationService: AuthenticationService,
     private _placeService: PlacesService,
-    private _bookingService: BookingService,
     private _navController: NavController,
     private _modalController: ModalController,
-    private _loadingController: LoadingController,
     private _actionSheetController: ActionSheetController,
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
@@ -38,13 +30,8 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
           this._router.navigate(['/places/tabs/discover']);
           return;
         }
-        const placeId = params.get('placeId');
-        this.subscription = this._placeService.getPlace(placeId).subscribe(
-          (response) => {
-            this.place = response;
-            this.isBookable = this.place.userId !== this._authenticationService.userId;
-          }
-        );
+        const placeId = params.get('placeId')
+        this.place = this._placeService.getPlace(placeId);
       }
     );
   }
@@ -99,31 +86,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     const {data, role} = await model.onWillDismiss();
     console.log('Data: ', data, 'Role: ', role);
     if (role === 'confirm') {
-      this._loadingController.create({
-        message: 'Booking place ...'
-      }).then((loadedElement) => {
-        loadedElement.present();
-        console.log('Booking Confirmed');
-        const bookingData = data.bookingData;
-        this._bookingService.addBooking(
-          this.place.id,
-          this.place.title,
-          this.place.imageUrl,
-          bookingData.firstName,
-          bookingData.lastName,
-          bookingData.guestNumber,
-          bookingData.startDate,
-          bookingData.endDate
-        ).subscribe(() => {
-          loadedElement.dismiss();
-        });
-      });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+      console.log('Booking Confirmed');
     }
   }
 }

@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{isLogin ? 'Signup' : 'Login'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="6" offset-md="3">
+          <ion-list>
+            <ion-item>
+              <ion-label position="floating">E-Mail</ion-label>
+              <ion-input type="email" ngModel name="email" required email #emailInput="ngModel"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!emailInput.valid && emailInput.touched" lines="none">
+              <p >Should be a valid email address.</p>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Password</ion-label>
+              <ion-input type="password" ngModel name="password" required minlength="6" #passwordInput="ngModel"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!passwordInput.valid && passwordInput.touched" lines="none">
+              <p >Should be a valid password.</p>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-md="6" offset-md="3">
+          <ion-button
+            type="button"
+            color="primary"
+            expand="block"
+            fill="clear"
+            (click)="onSwitchAuthMode()">Switch to {{isLogin ? 'Signup' : 'Login'}}</ion-button>
+          <ion-button [disabled]="!authForm.valid"  type="submit" color="primary" expand="block" fill="solid" (click)="onLogin()">Login</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+  <!--  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>-->
+</ion-content>

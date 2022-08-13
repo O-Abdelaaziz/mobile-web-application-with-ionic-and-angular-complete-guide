@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{selectedPalace.title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="onClose()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center ion-padding">
+
+  <form #bookingForm="ngForm" (ngSubmit)="onBookPlace()">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">First Name</ion-label>
+            <ion-input type="text" ngModel name="firstName" required #firstNameInput="ngModel"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Last Name</ion-label>
+            <ion-input type="text" ngModel name="lastName" required #lastNameInput="ngModel"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Number of Guests</ion-label>
+            <ion-select [ngModel]="'2'" name="numberGuests" #numberGuestsInput="ngModel">
+              <ion-select-option value="1">1</ion-select-option>
+              <ion-select-option value="2">2</ion-select-option>
+              <ion-select-option value="3">3</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="3" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Available from</ion-label>
+            <ion-datetime
+              display-format="MMM DD YYYY"
+              picker-format="YY MMM DD"
+              [min]="selectedPalace.availableFrom.toISOString()"
+              [max]="selectedPalace.availableTo.toISOString()"
+              [ngModel]="startDate"
+              name="dateFrom"
+              #startDateInput="ngModel"
+              required></ion-datetime>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size-sm="3">
+          <ion-item>
+            <ion-label position="floating">Available to</ion-label>
+            <ion-datetime
+              display-format="MMM DD YYYY"
+              picker-format="YY MMM DD"
+              [min]="startDateInput.value"
+              [max]="selectedPalace.availableTo.toISOString()"
+              [ngModel]="endDate"
+              name="dateTo"
+              required></ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-button [disabled]="!bookingForm.valid" color="primary" (click)="onBookPlace()">Book!</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+<!--  <ion-button id="open-modal">Open Datetime Modal</ion-button>-->
+<!--  <ion-modal-->
+<!--    [initialBreakpoint]="0.5" trigger="open-modal">-->
+<!--    <ng-template>-->
+<!--      <ion-content>-->
+<!--        <ion-datetime></ion-datetime>-->
+<!--      </ion-content>-->
+<!--    </ng-template>-->
+<!--  </ion-modal>-->
+</ion-content>
+

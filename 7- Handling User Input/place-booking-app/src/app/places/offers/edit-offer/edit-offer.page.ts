@@ -1,27 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Place} from '../../place.model';
-import {PlacesService} from '../../places.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {LoadingController, NavController} from '@ionic/angular';
-import {Subscription} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Place} from "../../place.model";
+import {PlacesService} from "../../places.service";
+import {ActivatedRoute} from "@angular/router";
+import {NavController} from "@ionic/angular";
 
 @Component({
   selector: 'app-edit-offer',
   templateUrl: './edit-offer.page.html',
   styleUrls: ['./edit-offer.page.scss'],
 })
-export class EditOfferPage implements OnInit, OnDestroy {
+export class EditOfferPage implements OnInit {
   public place: Place;
   public offerForm: FormGroup;
-  private subscription: Subscription;
 
   constructor(
     private _placesService: PlacesService,
-    private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _navController: NavController,
-    private _loadingController: LoadingController) {
+    private _navController: NavController) {
   }
 
   ngOnInit() {
@@ -29,21 +25,19 @@ export class EditOfferPage implements OnInit, OnDestroy {
       if (!params.has('placeId')) {
         this._navController.navigateBack('/places/tabs/offers');
       }
-      this.subscription = this._placesService.getPlace(params.get('placeId')).subscribe(
-        (response) => {
-          this.place = response;
-          this.offerForm = new FormGroup({
-            title: new FormControl(this.place.title, {
-              updateOn: 'blur',
-              validators: [Validators.required],
-            }),
-            description: new FormControl(this.place.description, {
-              updateOn: 'blur',
-              validators: [Validators.required, Validators.maxLength(180)],
-            })
-          });
-        }
-      );
+      this.place = this._placesService.getPlace(params.get('placeId'));
+
+      this.offerForm = new FormGroup({
+        title: new FormControl(this.place.title, {
+          updateOn: 'blur',
+          validators: [Validators.required],
+        }),
+        description: new FormControl(this.place.description, {
+          updateOn: 'blur',
+          validators: [Validators.required, Validators.maxLength(180)],
+        })
+      });
+
     });
   }
 
@@ -52,26 +46,6 @@ export class EditOfferPage implements OnInit, OnDestroy {
     if (this.offerForm.invalid) {
       return;
     }
-    this._loadingController.create({
-      message: 'Updating Place ...'
-    }).then((loadingElement) => {
-      loadingElement.present();
-      this._placesService.updatePlace(
-        this.place.id,
-        this.offerForm.value.title,
-        this.offerForm.value.description,
-      ).subscribe((response) => {
-        loadingElement.dismiss();
-        this.offerForm.reset();
-        this._router.navigateByUrl('/');
-      });
-    });
-
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    console.log(this.offerForm);
   }
 }

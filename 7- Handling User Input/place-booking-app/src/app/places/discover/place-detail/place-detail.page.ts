@@ -6,6 +6,7 @@ import {Place} from "../../place.model";
 import {PlacesService} from "../../places.service";
 import {Subscription} from "rxjs";
 import {BookingService} from "../../../bookings/booking.service";
+import {AuthenticationService} from "../../../auth/authentication.service";
 
 @Component({
   selector: 'app-place-detail',
@@ -14,9 +15,11 @@ import {BookingService} from "../../../bookings/booking.service";
 })
 export class PlaceDetailPage implements OnInit, OnDestroy {
   public place: Place | null = null;
+  public isBookable = false;
   private subscription: Subscription;
 
   constructor(
+    private _authenticationService: AuthenticationService,
     private _placeService: PlacesService,
     private _bookingService: BookingService,
     private _navController: NavController,
@@ -39,6 +42,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         this.subscription = this._placeService.getPlace(placeId).subscribe(
           (response) => {
             this.place = response;
+            this.isBookable = this.place.userId !== this._authenticationService.userId;
           }
         );
       }

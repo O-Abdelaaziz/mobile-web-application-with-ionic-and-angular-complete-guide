@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {PlacesService} from "../../places.service";
 import {Router} from "@angular/router";
+import {LoadingController} from "@ionic/angular";
 
 @Component({
   selector: 'app-new-offer',
@@ -13,6 +14,7 @@ export class NewOfferPage implements OnInit {
 
   constructor(
     private _placesService: PlacesService,
+    private _loadingController: LoadingController,
     private _router: Router) {
   }
 
@@ -45,14 +47,21 @@ export class NewOfferPage implements OnInit {
     if (this.offerForm.invalid) {
       return;
     }
+    this._loadingController.create({
+      message: 'Creating place...',
+    }).then((loadingElement) => {
+      loadingElement.present();
+    });
     this._placesService.addPlace(
       this.offerForm.value.title,
       this.offerForm.value.description,
       this.offerForm.value.price,
       new Date(this.offerForm.value.dateFrom),
       new Date(this.offerForm.value.dateTo),
-    );
-    this.offerForm.reset();
-    this._router.navigateByUrl('/');
+    ).subscribe(() => {
+      this._loadingController.dismiss();
+      this.offerForm.reset();
+      this._router.navigateByUrl('/');
+    });
   }
 }

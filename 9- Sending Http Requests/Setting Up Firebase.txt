@@ -1,0 +1,3 @@
+Just create an account in gmail, and navigate to:
+https://firebase.google.com/
+click on "go to console", and create new realtime database with test mode configuration.

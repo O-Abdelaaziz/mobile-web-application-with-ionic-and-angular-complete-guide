@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Place} from './place.model';
 import {AuthenticationService} from '../auth/authentication.service';
 import {BehaviorSubject} from 'rxjs';
-import {take, map, tap, delay} from 'rxjs/operators';
+import {take, map, tap, delay, switchMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable({
@@ -68,11 +68,18 @@ export class PlacesService {
       dateFrom,
       dateTo,
       this._authService.userId);
+    let generatedId: string;
 
-   return  this._httpClient.post(this.BASE_URL, {...newPlace, id: null}).pipe(
-      tap((response) => {
-        console.log(response);
-      })
+    return this._httpClient.post(this.BASE_URL, {...newPlace, id: null}).pipe(
+      switchMap((response: any) => {
+        generatedId = response.name;
+        return this.places;
+      }),
+      take(1),
+      tap((places) => {
+        newPlace.id = generatedId;
+        this.places.next(places.concat(newPlace));
+      }),
     );
     // return this.places.pipe(
     //   take(1),

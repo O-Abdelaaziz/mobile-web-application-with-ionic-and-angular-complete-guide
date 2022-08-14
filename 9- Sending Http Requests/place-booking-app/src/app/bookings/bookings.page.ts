@@ -27,6 +27,10 @@ export class BookingsPage implements OnInit, OnDestroy {
     );
   }
 
+  ionViewWillEnter() {
+    this._bookingService.fetchBookings().subscribe();
+  }
+
   onCancelBooking(bookingId: string, slidingElement: IonItemSliding) {
     slidingElement.close();
     this._loadingController.create({

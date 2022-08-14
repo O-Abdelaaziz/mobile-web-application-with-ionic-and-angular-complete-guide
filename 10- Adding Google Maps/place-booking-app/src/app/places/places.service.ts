@@ -4,6 +4,7 @@ import {AuthenticationService} from '../auth/authentication.service';
 import {BehaviorSubject, of} from 'rxjs';
 import {take, map, tap, switchMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
+import {PlaceLocation} from "./location.model";
 
 interface PlaceDate {
   availableFrom: string;
@@ -41,7 +42,8 @@ export class PlacesService {
               response[key].price,
               new Date(response[key].availableFrom),
               new Date(response[key].availableTo),
-              response[key].userId
+              response[key].userId,
+              response[key].location,
             ));
           }
         }
@@ -68,13 +70,13 @@ export class PlacesService {
           response.price,
           new Date(response.availableFrom),
           new Date(response.availableTo),
-          response.userId);
+          response.userId, response.location);
       })
     );
 
   }
 
-  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation) {
     const newPlace = new Place(Math.random().toString(),
       title,
       description,
@@ -82,7 +84,7 @@ export class PlacesService {
       price,
       dateFrom,
       dateTo,
-      this._authService.userId);
+      this._authService.userId, location);
     let generatedId: string;
 
     return this._httpClient.post(this.BASE_URL + '.json', {...newPlace, id: null}).pipe(
@@ -128,7 +130,7 @@ export class PlacesService {
           oldPlace.price,
           oldPlace.availableFrom,
           oldPlace.availableTo,
-          oldPlace.userId);
+          oldPlace.userId, oldPlace.location);
         return this._httpClient.put(`${this.BASE_URL}/${placeId}.json`, {
           ...updatedPlaces[updatedPlaceIndex],
           id: null

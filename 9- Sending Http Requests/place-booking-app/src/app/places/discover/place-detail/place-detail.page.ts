@@ -1,6 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActionSheetController, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {
+  ActionSheetController,
+  AlertController,
+  LoadingController,
+  ModalController,
+  NavController
+} from '@ionic/angular';
 import {CreateBookingComponent} from '../../../bookings/create-booking/create-booking.component';
 import {Place} from "../../place.model";
 import {PlacesService} from "../../places.service";
@@ -16,6 +22,7 @@ import {AuthenticationService} from "../../../auth/authentication.service";
 export class PlaceDetailPage implements OnInit, OnDestroy {
   public place: Place | null = null;
   public isBookable = false;
+  public isLoading = false;
   private subscription: Subscription;
 
   constructor(
@@ -26,6 +33,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     private _modalController: ModalController,
     private _loadingController: LoadingController,
     private _actionSheetController: ActionSheetController,
+    private _alertController: AlertController,
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
   ) {
@@ -38,11 +46,26 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
           this._router.navigate(['/places/tabs/discover']);
           return;
         }
+        this.isLoading = true;
         const placeId = params.get('placeId');
         this.subscription = this._placeService.getPlace(placeId).subscribe(
           (response: Place) => {
             this.place = response;
             this.isBookable = this.place.userId !== this._authenticationService.userId;
+            this.isLoading = false;
+          },
+          (error)=>{
+            this._alertController.create({
+              header: 'An Error occurred!',
+              message: 'Place could not be fetched. please tray again later.',
+              buttons: [{
+                text: 'okay', handler: () => {
+                  this._router.navigateByUrl('/places/tabs/discover');
+                }
+              }]
+            }).then((alertElement) => {
+              alertElement.present();
+            });
           }
         );
       }

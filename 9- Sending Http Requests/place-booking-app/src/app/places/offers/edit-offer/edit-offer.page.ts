@@ -34,7 +34,7 @@ export class EditOfferPage implements OnInit, OnDestroy {
         this._navController.navigateBack('/places/tabs/offers');
         return;
       }
-      this. = params.get('placeId');
+      this.placeId = params.get('placeId');
       this.isLoading = true;
       this.subscription = this._placesService.getPlace(params.get('placeId')).subscribe(
         (response: Place) => {
@@ -62,7 +62,7 @@ export class EditOfferPage implements OnInit, OnDestroy {
             }]
           }).then((alertElement) => {
             alertElement.present();
-          })
+          });
         }
       );
     });

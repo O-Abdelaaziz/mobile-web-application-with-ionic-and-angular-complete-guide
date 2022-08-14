@@ -58,10 +58,20 @@ export class PlacesService {
   }
 
   getPlace(placeId) {
-    return this.places.pipe(
-      take(1),
-      map((places) => ({...places.find(place => place.id === placeId)})),
+    return this._httpClient.get(`${this.BASE_URL}/${placeId}.json`).pipe(
+      map((response: Place) => {
+        return new Place(
+          placeId,
+          response.title,
+          response.description,
+          response.imageUrl,
+          response.price,
+          new Date(response.availableFrom),
+          new Date(response.availableTo),
+          response.userId);
+      })
     );
+
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {

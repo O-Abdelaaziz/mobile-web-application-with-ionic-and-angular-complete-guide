@@ -28,7 +28,7 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
       }
       const placeId = parameter.get('placeId');
       this.subscription = this._placeService.getPlace(placeId).subscribe(
-        (response) => {
+        (response: Place) => {
           this.place = response;
         }
       );

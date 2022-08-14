@@ -40,7 +40,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         }
         const placeId = params.get('placeId');
         this.subscription = this._placeService.getPlace(placeId).subscribe(
-          (response) => {
+          (response: Place) => {
             this.place = response;
             this.isBookable = this.place.userId !== this._authenticationService.userId;
           }

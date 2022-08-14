@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Place} from './place.model';
 import {AuthenticationService} from '../auth/authentication.service';
-import {BehaviorSubject} from 'rxjs';
-import {take, map, tap, delay, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, of} from 'rxjs';
+import {take, map, tap, switchMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
 interface PlaceDate {
@@ -109,7 +109,14 @@ export class PlacesService {
     let updatedPlaces: Place[];
     return this.places.pipe(
       take(1),
-      switchMap((response: any) => {
+      switchMap((response: Place[]) => {
+        if (!response || response.length <= 0) {
+          return this.fetchPlace();
+        } else {
+          return of(response);
+        }
+      }),
+      switchMap((response) => {
         const updatedPlaceIndex = response.findIndex(p => p.id === placeId);
         updatedPlaces = [...response];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
@@ -130,6 +137,7 @@ export class PlacesService {
       tap(() => {
         this.places.next(updatedPlaces);
       })
-    );
+    )
+      ;
   }
 }

@@ -34,6 +34,15 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         googleMaps.event.addListenerOnce(map, 'idle', () => {
           this._render.addClass(mapElement, 'visible');
         });
+
+        map.addListener('click', event => {
+          const selectedCoords = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+          };
+          this._modalController.dismiss(selectedCoords);
+        });
+
       }).catch(error => {
       console.log(error);
     });

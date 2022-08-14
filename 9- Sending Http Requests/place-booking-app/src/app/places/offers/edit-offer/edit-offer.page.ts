@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Place} from '../../place.model';
 import {PlacesService} from '../../places.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LoadingController, NavController} from '@ionic/angular';
+import {AlertController, LoadingController, NavController} from '@ionic/angular';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -23,7 +23,9 @@ export class EditOfferPage implements OnInit, OnDestroy {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _navController: NavController,
-    private _loadingController: LoadingController) {
+    private _loadingController: LoadingController,
+    private _alertController: AlertController,
+  ) {
   }
 
   ngOnInit() {
@@ -32,7 +34,7 @@ export class EditOfferPage implements OnInit, OnDestroy {
         this._navController.navigateBack('/places/tabs/offers');
         return;
       }
-      this.placeId = params.get('placeId');
+      this. = params.get('placeId');
       this.isLoading = true;
       this.subscription = this._placesService.getPlace(params.get('placeId')).subscribe(
         (response: Place) => {
@@ -48,6 +50,19 @@ export class EditOfferPage implements OnInit, OnDestroy {
             })
           });
           this.isLoading = false;
+        },
+        (error) => {
+          this._alertController.create({
+            header: 'An Error occurred!',
+            message: 'Place could not be fetched. please tray again later.',
+            buttons: [{
+              text: 'okay', handler: () => {
+                this._router.navigateByUrl('/places/tabs/offers');
+              }
+            }]
+          }).then((alertElement) => {
+            alertElement.present();
+          })
         }
       );
     });

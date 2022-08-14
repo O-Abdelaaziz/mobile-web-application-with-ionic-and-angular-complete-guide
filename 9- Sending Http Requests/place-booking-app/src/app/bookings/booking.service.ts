@@ -105,9 +105,11 @@ export class BookingService {
   }
 
   cancelBooking(bookingId: string) {
-    return this.bookings.pipe(
+    return this._httpClient.get(`${this.BASE_URL}/${bookingId}.json`).pipe(
+      switchMap(() => {
+        return this.bookings;
+      }),
       take(1),
-      delay(1000),
       tap(bookings => {
         this._bookings.next(bookings.filter(p => p.id !== bookingId));
       })

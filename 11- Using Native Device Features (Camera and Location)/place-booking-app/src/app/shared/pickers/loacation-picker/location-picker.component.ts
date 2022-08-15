@@ -1,10 +1,11 @@
 import {Component, OnInit, EventEmitter, Output} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {ActionSheetController, AlertController, ModalController} from '@ionic/angular';
 import {MapModalComponent} from '../../map-modal/map-modal.component';
 import {HttpClient} from '@angular/common/http';
 import {map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {PlaceLocation} from '../../../places/location.model';
+import {Coordinates, PlaceLocation} from '../../../places/location.model';
+import {Capacitor, Plugins} from '@capacitor/core';
 
 @Component({
   selector: 'app-location-picker',
@@ -18,7 +19,9 @@ export class LocationPickerComponent implements OnInit {
 
   constructor(
     private _httpClient: HttpClient,
-    private _modalController: ModalController
+    private _modalController: ModalController,
+    private _actionSheetController: ActionSheetController,
+    private _alertController: AlertController,
   ) {
   }
 
@@ -26,6 +29,50 @@ export class LocationPickerComponent implements OnInit {
   }
 
   onPickLocation() {
+    this._actionSheetController.create({
+      header: 'Please Choose',
+      buttons: [
+        {
+          text: 'Auto-Locate', handler: () => {
+            this.locateUser();
+          }
+        },
+        {
+          text: 'Pick on map', handler: () => {
+            this.openMap();
+          }
+        },
+        {text: 'Cancel', role: 'cancel'},
+      ]
+    }).then((actionSheetElement) => {
+      actionSheetElement.present();
+    });
+
+  }
+
+  private locateUser() {
+    if (!Capacitor.isPluginAvailable('Geolocation')) {
+      this.showErrorAlert();
+      return;
+    }
+    Plugins.Geolocation.getCurrentPosition()
+      .then(geoPosition => {
+        const coordinates: Coordinates = {lat: geoPosition.coords.latitude, lng: geoPosition.coords.longitude};
+      }).cache((err) => {
+      this.showErrorAlert();
+    });
+  }
+
+  private showErrorAlert() {
+    this._alertController.create({
+      header: 'Could not fetch location',
+      message: 'Please use the map to pick     a location!'
+    }).then((alertElement) => {
+      alertElement.present();
+    });
+  }
+
+  private openMap() {
     this._modalController.create({
       component: MapModalComponent
     }).then((modalElement) => {

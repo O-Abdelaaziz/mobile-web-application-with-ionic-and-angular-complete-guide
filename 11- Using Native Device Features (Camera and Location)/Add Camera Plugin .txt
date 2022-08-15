@@ -1,0 +1,33 @@
+Install​:
+npm install @capacitor/camera (install & add geolocation to @capacitor folder in node_modules folder)
+npx cap sync (Sync your web code to your native project)
+
+Android​:
+This API requires the following permissions be added to your AndroidManifest.xml:
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+Example​:
+import { Camera, CameraResultType } from '@capacitor/camera';
+
+const takePicture = async () => {
+  const image = await Camera.getPhoto({
+    quality: 90,
+    allowEditing: true,
+    resultType: CameraResultType.Uri
+  });
+
+  // image.webPath will contain a path that can be set as an image src.
+  // You can access the original file using image.path, which can be
+  // passed to the Filesystem API to read the raw data of the image,
+  // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+  var imageUrl = image.webPath;
+
+  // Can be set to the src of an image now
+  imageElement.src = imageUrl;
+};
+  console.log('Current position:', coordinates);
+};
+
+Reference:
+https://capacitorjs.com/docs/apis/camera

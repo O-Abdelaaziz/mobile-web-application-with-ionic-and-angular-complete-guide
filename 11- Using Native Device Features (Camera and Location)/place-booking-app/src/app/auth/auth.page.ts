@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthenticationService, AuthResponseData} from './authentication.service';
+import {AuthenticationService} from './authentication.service';
 import {Router} from "@angular/router";
-import {AlertController, LoadingController} from "@ionic/angular";
+import {LoadingController} from "@ionic/angular";
 import {NgForm} from "@angular/forms";
-import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-auth',
@@ -17,76 +16,52 @@ export class AuthPage implements OnInit {
   constructor(
     private _authenticationService: AuthenticationService,
     private _loadingController: LoadingController,
-    private _alertController: AlertController,
     private _router: Router) {
   }
 
   ngOnInit() {
-    console.log(this.isLogin);
   }
 
-  public authenticate(email: string, password: string) {
+  public async onLogin() {
     this.isLoading = true;
-    this._loadingController
-      .create({
-        keyboardClose: true,
-        message: 'Loading...',
-        duration: 1000,
-        spinner: 'circles',
-      })
-      .then(loadingEl => {
-        loadingEl.present();
-        let authObservable: Observable<AuthResponseData>;
-        if (this.isLogin) {
-          authObservable = this._authenticationService.login(email, password);
-        } else {
-          authObservable = this._authenticationService.signup(email, password);
-        }
-        authObservable.subscribe(
-          resData => {
-            console.log(resData);
-            this.isLoading = false;
-            loadingEl.dismiss();
-            this._router.navigateByUrl('/places/tabs/discover');
-          },
-          errRes => {
-            loadingEl.dismiss();
-            const code = errRes.error.error.message;
-            let message = 'Could not sign you up, please try again.';
-            if (code === 'EMAIL_EXISTS') {
-              message = 'This email address exists already!';
-            } else if (code === 'EMAIL_NOT_FOUND') {
-              message = 'This email address not exists!';
-            } else if (code === 'INVALID_PASSWORD') {
-              message = 'This password not correct!';
-            }
-            this.showAlert(message);
-          }
-        );
-      });
+    this._authenticationService.login();
+
+    const loading = await this._loadingController.create({
+      message: 'Loading...',
+      duration: 1000,
+      spinner: 'circles',
+    });
+
+    await loading.present();
+
+    if (await loading.onDidDismiss()) {
+      this.isLoading = false;
+      await this._router.navigateByUrl('/places/tabs/discover')
+    }
+
+
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    //   this._router.navigateByUrl('/places/tabs/discover')
+    // }, 5000);
   }
 
   onSubmit(authForm: NgForm) {
     if (authForm.invalid) {
       return;
     }
+
     const email = authForm.value.email;
     const password = authForm.value.password;
-    this.authenticate(email, password);
-    authForm.reset();
+    console.log(email, password);
+    if (this.isLogin) {
+      //send a request to login server
+    } else {
+      //send a request to signup server
+    }
   }
 
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
-  }
-
-  private showAlert(message: string) {
-    this._alertController
-      .create({
-        header: 'Authentication failed',
-        message: message,
-        buttons: ['Okay']
-      })
-      .then(alertEl => alertEl.present());
   }
 }

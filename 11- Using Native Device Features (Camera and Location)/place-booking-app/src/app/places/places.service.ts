@@ -29,11 +29,7 @@ export class PlacesService {
   }
 
   fetchPlace() {
-    return this._authService.token.pipe(
-      take(1),
-      switchMap(token => {
-        return this._httpClient.get<{ [key: string]: PlaceDate }>(`${this.BASE_URL}.json?auth=${token}`)
-      }),
+    return this._httpClient.get<{ [key: string]: PlaceDate }>(this.BASE_URL + '.json').pipe(
       map((response: any) => {
         const places = [];
         for (const key in response) {
@@ -64,11 +60,7 @@ export class PlacesService {
   }
 
   getPlace(placeId) {
-    return this._authService.token.pipe(
-      take(1),
-      switchMap(token => {
-        return this._httpClient.get(`${this.BASE_URL}/${placeId}.json?auth=${token}`);
-      }),
+    return this._httpClient.get(`${this.BASE_URL}/${placeId}.json`).pipe(
       map((response: Place) => {
         return new Place(
           placeId,
@@ -85,32 +77,17 @@ export class PlacesService {
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation) {
+    const newPlace = new Place(Math.random().toString(),
+      title,
+      description,
+      'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this._authService.userId, location);
     let generatedId: string;
-    let fetchedUserId: string;
-    let newPlace;
-    return this._authService.userId.pipe(
-      take(1),
-      switchMap(userId => {
-        fetchedUserId = userId;
-        return this._authService.token;
-      }),
-      take(1),
-      switchMap((token) => {
-        if (!fetchedUserId) {
-          throw new Error('No user id found');
-        }
-        newPlace = new Place(Math.random().toString(),
-          title,
-          description,
-          'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
-          price,
-          dateFrom,
-          dateTo,
-          fetchedUserId,
-          location);
 
-        return this._httpClient.post(`${this.BASE_URL} + '.json?auth=${token}`, {...newPlace, id: null});
-      }),
+    return this._httpClient.post(this.BASE_URL + '.json', {...newPlace, id: null}).pipe(
       switchMap((response: any) => {
         generatedId = response.name;
         return this.places;
@@ -132,13 +109,7 @@ export class PlacesService {
 
   updatePlace(placeId: string, title: string, description: string) {
     let updatedPlaces: Place[];
-    let fetchedToken;
-    return  this._authService.token.pipe(
-      take(1),
-      switchMap(token => {
-        fetchedToken = token;
-        return this.places;
-      }),
+    return this.places.pipe(
       take(1),
       switchMap((response: Place[]) => {
         if (!response || response.length <= 0) {
@@ -160,7 +131,7 @@ export class PlacesService {
           oldPlace.availableFrom,
           oldPlace.availableTo,
           oldPlace.userId, oldPlace.location);
-        return this._httpClient.put(`${this.BASE_URL}/${placeId}.json?auth=${fetchedToken}`, {
+        return this._httpClient.put(`${this.BASE_URL}/${placeId}.json`, {
           ...updatedPlaces[updatedPlaceIndex],
           id: null
         });
@@ -169,6 +140,6 @@ export class PlacesService {
         this.places.next(updatedPlaces);
       })
     )
-    ;
+      ;
   }
 }

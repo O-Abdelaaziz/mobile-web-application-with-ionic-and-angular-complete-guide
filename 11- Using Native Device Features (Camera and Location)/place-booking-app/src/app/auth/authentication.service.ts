@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs';
 import {User} from './user.model';
 import {map, tap} from 'rxjs/operators';
+import {Preferences} from '@capacitor/preferences';
 
 export interface AuthResponseData {
   idToken: string;
@@ -68,7 +69,17 @@ export class AuthenticationService {
   }
 
   private setUserDate(userData: AuthResponseData) {
-    const expirationTime = new Date().getTime() + (+userData.expiresIn * 1000);
-    this._user.next(new User(userData.localId, userData.email, userData.idToken, new Date(expirationTime)));
+    const expirationTime = new Date(new Date().getTime() + (+userData.expiresIn * 1000));
+    this._user.next(new User(userData.localId, userData.email, userData.idToken, expirationTime));
+    this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString());
   }
+
+  private storeAuthData(userId: string, token: string, tokenExpirationDate: string) {
+    const data = JSON.stringify({userId, token, tokenExpirationDate});
+    Preferences.set({
+      key: 'authData',
+      value: data,
+    });
+  }
+
 }

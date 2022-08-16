@@ -59,6 +59,16 @@ export class ImagePickerComponent implements OnInit {
   }
 
   onFileChosen(event: Event) {
+    const pickedFile = (event.target as HTMLInputElement).files[0];
+    if (!pickedFile) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      const dataUrl = fileReader.result.toString();
+      this.selectedImage = dataUrl;
+    };
+    fileReader.readAsDataURL(pickedFile);
     console.log(event);
   }
 }

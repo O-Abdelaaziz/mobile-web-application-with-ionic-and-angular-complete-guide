@@ -38,8 +38,14 @@ export class BookingService {
   }
 
   fetchBookings() {
-    return this._httpClient
-      .get<{ [key: string]: BookingDate }>(`${this.BASE_URL}.json?orderBy="userId"&equalTo="${this._authService.userId}"`).pipe(
+    return  this._authService.userId.pipe(
+      switchMap(userId=>{
+        if (!userId) {
+          throw new Error('No user id found');
+        }
+        return this._httpClient
+          .get<{ [key: string]: BookingDate }>(`${this.BASE_URL}.json?orderBy="userId"&equalTo="${userId}"`)
+      }),
         map((response: any) => {
           const bookings = [];
           for (const key in response) {

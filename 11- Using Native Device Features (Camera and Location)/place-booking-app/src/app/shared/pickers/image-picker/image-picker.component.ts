@@ -12,7 +12,7 @@ export class ImagePickerComponent implements OnInit {
   @Output()
   public imagePick = new EventEmitter<string | File>();
   @ViewChild('filePicker', {static: false})
-  public filePicker: ElementRef<HTMLInputElement>;
+  public filePickerRef: ElementRef<HTMLInputElement>;
   public selectedImage: string;
   public usePicker = false;
 
@@ -30,13 +30,12 @@ export class ImagePickerComponent implements OnInit {
       (this._platform.is('desktop'))
     ) {
       this.usePicker = true;
-      console.log('use picker is true: ', this.usePicker);
     }
   }
 
   onPickImage() {
     if (!Capacitor.isPluginAvailable('Camera') || this.usePicker) {
-      this.filePicker.nativeElement.click();
+      this.filePickerRef.nativeElement.click();
       return;
     }
     console.log('emm');
@@ -54,6 +53,9 @@ export class ImagePickerComponent implements OnInit {
       })
       .catch(error => {
         console.log(error);
+        if (this.usePicker) {
+          this.filePickerRef.nativeElement.click();
+        }
         return false;
       });
   }

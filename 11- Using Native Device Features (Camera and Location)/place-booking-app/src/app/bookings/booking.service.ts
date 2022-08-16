@@ -38,38 +38,39 @@ export class BookingService {
   }
 
   fetchBookings() {
-    return  this._authService.userId.pipe(
-      switchMap(userId=>{
+    return this._authService.userId.pipe(
+      take(1),
+      switchMap(userId => {
         if (!userId) {
           throw new Error('No user id found');
         }
         return this._httpClient
           .get<{ [key: string]: BookingDate }>(`${this.BASE_URL}.json?orderBy="userId"&equalTo="${userId}"`)
       }),
-        map((response: any) => {
-          const bookings = [];
-          for (const key in response) {
-            if (response.hasOwnProperty(key)) {
-              bookings.push(new Booking(
-                key,
-                response[key].placeId,
-                response[key].userId,
-                response[key].placeTitle,
-                response[key].placeImage,
-                response[key].firstName,
-                response[key].lastName,
-                response[key].guestNumber,
-                new Date(response[key].dateFrom),
-                new Date(response[key].dateTo),
-              ));
-            }
+      map((response: any) => {
+        const bookings = [];
+        for (const key in response) {
+          if (response.hasOwnProperty(key)) {
+            bookings.push(new Booking(
+              key,
+              response[key].placeId,
+              response[key].userId,
+              response[key].placeTitle,
+              response[key].placeImage,
+              response[key].firstName,
+              response[key].lastName,
+              response[key].guestNumber,
+              new Date(response[key].dateFrom),
+              new Date(response[key].dateTo),
+            ));
           }
-          return bookings;
-        }),
-        tap((response) => {
-          this._bookings.next(response);
-        })
-      );
+        }
+        return bookings;
+      }),
+      tap((response) => {
+        this._bookings.next(response);
+      })
+    );
   }
 
   addBooking(

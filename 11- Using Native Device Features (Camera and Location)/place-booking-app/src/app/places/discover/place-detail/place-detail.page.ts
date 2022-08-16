@@ -51,7 +51,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         this.isLoading = true;
         let fetchedUserId: string;
         this._authenticationService.userId.pipe(
-          // take(1),
+          take(1),
           switchMap(userId => {
             if (!userId) {
               throw new Error('No user id found');

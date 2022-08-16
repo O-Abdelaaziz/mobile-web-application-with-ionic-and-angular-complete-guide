@@ -99,8 +99,9 @@ export class AuthenticationService {
     ;
   }
 
-  public logout() {
+  logout() {
     this._user.next(null);
+    Preferences.remove({ key: 'authData' });
   }
 
   private setUserDate(userData: AuthResponseData) {

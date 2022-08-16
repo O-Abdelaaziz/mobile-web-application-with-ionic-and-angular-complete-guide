@@ -133,7 +133,7 @@ export class PlacesService {
   updatePlace(placeId: string, title: string, description: string) {
     let updatedPlaces: Place[];
     let fetchedToken;
-    this._authService.token.pipe(
+    return  this._authService.token.pipe(
       take(1),
       switchMap(token => {
         fetchedToken = token;

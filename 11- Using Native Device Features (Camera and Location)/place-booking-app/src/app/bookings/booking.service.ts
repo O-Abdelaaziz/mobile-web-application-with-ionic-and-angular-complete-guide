@@ -38,14 +38,20 @@ export class BookingService {
   }
 
   fetchBookings() {
+    let fetchedUserId: string;
     return this._authService.userId.pipe(
       take(1),
       switchMap(userId => {
         if (!userId) {
           throw new Error('No user id found');
         }
+        fetchedUserId = userId;
+        return this._authService.token;
+      }),
+      take(1),
+      switchMap(token => {
         return this._httpClient
-          .get<{ [key: string]: BookingDate }>(`${this.BASE_URL}.json?orderBy="userId"&equalTo="${userId}"`)
+          .get<{ [key: string]: BookingDate }>(`${this.BASE_URL}.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`);
       }),
       map((response: any) => {
         const bookings = [];
@@ -85,16 +91,23 @@ export class BookingService {
   ) {
     let generatedId: string;
     let newBooking;
+    let fetchedUserId;
     return this._authService.userId.pipe(
       take(1),
       switchMap((userId) => {
         if (!userId) {
           throw new Error('No user id found');
         }
+        fetchedUserId = userId;
+        return this._authService.token;
+
+      }),
+      take(1),
+      switchMap(token => {
         newBooking = new Booking(
           Math.random().toString(),
           placeId,
-          userId,
+          fetchedUserId,
           placeTitle,
           placeImage,
           firstName,
@@ -103,7 +116,10 @@ export class BookingService {
           dateFrom,
           dateTo
         );
-        return this._httpClient.post<{ name: string }>(this.BASE_URL + '.json', {...newBooking, id: null});
+        return this._httpClient.post<{ name: string }>(`${this.BASE_URL}.json?auth=${token}`, {
+          ...newBooking,
+          id: null
+        });
       }),
       switchMap((response: any) => {
         generatedId = response.name;
@@ -118,7 +134,11 @@ export class BookingService {
   }
 
   cancelBooking(bookingId: string) {
-    return this._httpClient.get(`${this.BASE_URL}/${bookingId}.json`).pipe(
+    return this._authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this._httpClient.get(`${this.BASE_URL}/${bookingId}.json?auth=${token}`);
+      }),
       switchMap(() => {
         return this.bookings;
       }),

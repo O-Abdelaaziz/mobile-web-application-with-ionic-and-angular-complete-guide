@@ -1,0 +1,7 @@
+service firebase.storage{
+  match /b/{bucket}/o {
+     mutch /{allPaths=**} {
+        allow read, write: if request.auth != null;
+     }	
+  }
+}

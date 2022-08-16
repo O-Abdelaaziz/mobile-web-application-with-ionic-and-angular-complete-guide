@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthenticationService} from './authentication.service';
+import {AuthenticationService, AuthResponseData} from './authentication.service';
 import {Router} from "@angular/router";
 import {AlertController, LoadingController} from "@ionic/angular";
 import {NgForm} from "@angular/forms";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-auth',
@@ -26,7 +27,6 @@ export class AuthPage implements OnInit {
 
   public authenticate(email: string, password: string) {
     this.isLoading = true;
-    this._authenticationService.login();
     this._loadingController
       .create({
         keyboardClose: true,
@@ -36,7 +36,13 @@ export class AuthPage implements OnInit {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this._authenticationService.signup(email, password).subscribe(
+        let authObservable: Observable<AuthResponseData>;
+        if (this.isLogin) {
+          authObservable = this._authenticationService.login(email, password);
+        } else {
+          authObservable = this._authenticationService.signup(email, password);
+        }
+        authObservable.subscribe(
           resData => {
             console.log(resData);
             this.isLoading = false;
@@ -49,6 +55,10 @@ export class AuthPage implements OnInit {
             let message = 'Could not sign you up, please try again.';
             if (code === 'EMAIL_EXISTS') {
               message = 'This email address exists already!';
+            } else if (code === 'EMAIL_NOT_FOUND') {
+              message = 'This email address not exists!';
+            } else if (code === 'INVALID_PASSWORD') {
+              message = 'This password not correct!';
             }
             this.showAlert(message);
           }
@@ -62,14 +72,7 @@ export class AuthPage implements OnInit {
     }
     const email = authForm.value.email;
     const password = authForm.value.password;
-    console.log(email, password);
-    if (this.isLogin) {
-      //send a request to login server
-    } else {
-      //send a request to signup server
-      this.authenticate(email, password);
-      console.log('signup');
-    }
+    this.authenticate(email, password);
   }
 
   onSwitchAuthMode() {

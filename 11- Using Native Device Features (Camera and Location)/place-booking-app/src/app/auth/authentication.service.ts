@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from "rxjs";
 
-interface AuthResponseData {
+export interface AuthResponseData {
   idToken: string;
   email: string;
   refreshToken: string;
@@ -26,16 +25,19 @@ export class AuthenticationService {
 
   signup(email: string, password: string) {
     return this._httpClient
-      .post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]',
-        {email, password, returnSecureToken: true});
+      .post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[Your_Key]',
+        { email: email, password: password, returnSecureToken: true });
   }
+
 
   get userIsAuthenticated() {
     return this._userIsAuthenticated;
   }
 
-  public login() {
-    this._userIsAuthenticated = true;
+  public login(email: string, password: string) {
+    return this._httpClient
+      .post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[Your_Key]',
+        { email: email, password: password, returnSecureToken: true });
   }
 
   public logout() {

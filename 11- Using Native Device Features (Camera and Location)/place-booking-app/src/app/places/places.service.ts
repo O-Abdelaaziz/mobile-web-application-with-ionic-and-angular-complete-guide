@@ -77,17 +77,26 @@ export class PlacesService {
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation) {
-    const newPlace = new Place(Math.random().toString(),
-      title,
-      description,
-      'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
-      price,
-      dateFrom,
-      dateTo,
-      this._authService.userId, location);
     let generatedId: string;
+    let newPlace;
+    return  this._authService.userId.pipe(
+      take(1),
+      switchMap((userId) => {
+        if (!userId) {
+          throw new Error('No user id found');
+        }
+        newPlace = new Place(Math.random().toString(),
+          title,
+          description,
+          'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
+          price,
+          dateFrom,
+          dateTo,
+          userId,
+          location);
 
-    return this._httpClient.post(this.BASE_URL + '.json', {...newPlace, id: null}).pipe(
+        return this._httpClient.post(this.BASE_URL + '.json', {...newPlace, id: null});
+      }),
       switchMap((response: any) => {
         generatedId = response.name;
         return this.places;

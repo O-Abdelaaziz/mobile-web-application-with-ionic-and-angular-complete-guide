@@ -14,6 +14,7 @@ import {Subscription} from "rxjs";
 import {BookingService} from "../../../bookings/booking.service";
 import {AuthenticationService} from "../../../auth/authentication.service";
 import {MapModalComponent} from "../../../shared/map-modal/map-modal.component";
+import {switchMap, take} from "rxjs/operators";
 
 @Component({
   selector: 'app-place-detail',
@@ -48,14 +49,23 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
           return;
         }
         this.isLoading = true;
-        const placeId = params.get('placeId');
-        this.subscription = this._placeService.getPlace(placeId).subscribe(
+        let fetchedUserId: string;
+        this._authenticationService.userId.pipe(
+          // take(1),
+          switchMap(userId => {
+            if (!userId) {
+              throw new Error('No user id found');
+            }
+            fetchedUserId = userId;
+            return this._placeService.getPlace(params.get('placeId'));
+          })
+        ).subscribe(
           (response: Place) => {
             this.place = response;
-            this.isBookable = this.place.userId !== this._authenticationService.userId;
+            this.isBookable = this.place.userId !== fetchedUserId;
             this.isLoading = false;
           },
-          (error)=>{
+          (error) => {
             this._alertController.create({
               header: 'An Error occurred!',
               message: 'Place could not be fetched. please tray again later.',

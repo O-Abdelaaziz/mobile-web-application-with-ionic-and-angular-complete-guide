@@ -45,7 +45,10 @@ export class DiscoverPage implements OnInit, OnDestroy {
   }
 
   segmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
-    this._authService.userId.pipe(take(1)).subscribe(userId => {
+    this._authService.userId.pipe(
+      // take only one
+      take(1)
+    ).subscribe(userId => {
       if (event.detail.value === 'all') {
         this.relevantPlaces = this.places;
         this.loadedPlaces = this.relevantPlaces.slice(1);

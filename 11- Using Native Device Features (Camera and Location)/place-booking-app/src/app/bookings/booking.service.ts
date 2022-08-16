@@ -66,7 +66,6 @@ export class BookingService {
       );
   }
 
-
   addBooking(
     placeId: string,
     placeTitle: string,
@@ -77,21 +76,28 @@ export class BookingService {
     dateFrom: Date,
     dateTo: Date
   ) {
-    const newBooking = new Booking(
-      Math.random().toString(),
-      placeId,
-      this._authService.userId,
-      placeTitle,
-      placeImage,
-      firstName,
-      lastName,
-      guestNumber,
-      dateFrom,
-      dateTo
-    );
     let generatedId: string;
-
-    return this._httpClient.post<{ name: string }>(this.BASE_URL + '.json', {...newBooking, id: null}).pipe(
+    let newBooking;
+    this._authService.userId.pipe(
+      take(1),
+      switchMap((userId) => {
+        if (!userId) {
+          throw new Error('No user id found');
+        }
+        newBooking = new Booking(
+          Math.random().toString(),
+          placeId,
+          userId,
+          placeTitle,
+          placeImage,
+          firstName,
+          lastName,
+          guestNumber,
+          dateFrom,
+          dateTo
+        );
+        return this._httpClient.post<{ name: string }>(this.BASE_URL + '.json', {...newBooking, id: null});
+      }),
       switchMap((response: any) => {
         generatedId = response.name;
         return this.bookings;

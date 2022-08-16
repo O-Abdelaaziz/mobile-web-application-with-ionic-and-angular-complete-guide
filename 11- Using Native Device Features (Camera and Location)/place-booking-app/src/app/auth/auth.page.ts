@@ -20,6 +20,7 @@ export class AuthPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.isLogin)
   }
 
   public async onLogin() {
@@ -58,6 +59,12 @@ export class AuthPage implements OnInit {
       //send a request to login server
     } else {
       //send a request to signup server
+      console.log('signup');
+      this._authenticationService.signup(email, password).subscribe(
+        (response) => {
+          console.log(response);
+        }
+      );
     }
   }
 

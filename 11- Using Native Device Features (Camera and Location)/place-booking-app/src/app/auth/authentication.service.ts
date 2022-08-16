@@ -35,6 +35,18 @@ export class AuthenticationService implements OnDestroy {
     ;
   }
 
+  get token() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if (user) {
+          return user.token;
+        } else {
+          return null;
+        }
+      }));
+    ;
+  }
+
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map(user => {

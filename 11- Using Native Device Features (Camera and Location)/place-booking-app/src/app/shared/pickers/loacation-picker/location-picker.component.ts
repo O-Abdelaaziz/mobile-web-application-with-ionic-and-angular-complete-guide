@@ -5,7 +5,8 @@ import {HttpClient} from '@angular/common/http';
 import {map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {Coordinates, PlaceLocation} from '../../../places/location.model';
-import {Capacitor, Plugins} from '@capacitor/core';
+import {Capacitor} from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-location-picker',
@@ -56,12 +57,12 @@ export class LocationPickerComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    Plugins.Geolocation.getCurrentPosition()
+    Geolocation.getCurrentPosition()
       .then(geoPosition => {
         const coordinates: Coordinates = {lat: geoPosition.coords.latitude, lng: geoPosition.coords.longitude};
         this.createPlace(coordinates.lat, coordinates.lng);
         this.isLoading = false;
-      }).cache((err) => {
+      }).catch((err) => {
       this.showErrorAlert();
     });
   }

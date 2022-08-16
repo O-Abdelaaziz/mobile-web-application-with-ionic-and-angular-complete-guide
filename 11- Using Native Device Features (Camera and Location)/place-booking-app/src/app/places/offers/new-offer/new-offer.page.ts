@@ -69,7 +69,7 @@ export class NewOfferPage implements OnInit {
   }
 
   onCreateOffer() {
-    if (this.offerForm.invalid) {
+    if (this.offerForm.invalid || !this.offerForm.get('image').value) {
       return;
     }
     this._loadingController.create({

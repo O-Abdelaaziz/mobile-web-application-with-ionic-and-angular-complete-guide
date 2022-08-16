@@ -16,4 +16,4 @@
   </ion-button>
 </div>
 
-<input type="file" *ngIf="usePicker" (change)="onFileChosen($event)" #filePicker>
+<input type="file" accept="image/jpeg" *ngIf="usePicker" (change)="onFileChosen($event)" #filePicker>

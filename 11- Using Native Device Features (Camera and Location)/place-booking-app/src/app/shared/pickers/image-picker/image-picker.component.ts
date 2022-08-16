@@ -10,7 +10,7 @@ import {Platform} from '@ionic/angular';
 })
 export class ImagePickerComponent implements OnInit {
   @Output()
-  public imagePick = new EventEmitter<string>();
+  public imagePick = new EventEmitter<string | File>();
   @ViewChild('filePicker', {static: false})
   public filePicker: ElementRef<HTMLInputElement>;
   public selectedImage: string;
@@ -20,11 +20,11 @@ export class ImagePickerComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('mobile ', this._platform.is('mobile'));
-    console.log('hybrid ', this._platform.is('hybrid'));
-    console.log('ios ', this._platform.is('ios'));
-    console.log('android ', this._platform.is('android'));
-    console.log('desktop ', this._platform.is('desktop'));
+    // console.log('mobile ', this._platform.is('mobile'));
+    // console.log('hybrid ', this._platform.is('hybrid'));
+    // console.log('ios ', this._platform.is('ios'));
+    // console.log('android ', this._platform.is('android'));
+    // console.log('desktop ', this._platform.is('desktop'));
     if (
       (this._platform.is('mobile') && !this._platform.is('hybrid')) ||
       (this._platform.is('desktop'))
@@ -67,6 +67,7 @@ export class ImagePickerComponent implements OnInit {
     fileReader.onload = () => {
       const dataUrl = fileReader.result.toString();
       this.selectedImage = dataUrl;
+      this.imagePick.emit(pickedFile);
     };
     fileReader.readAsDataURL(pickedFile);
     console.log(event);

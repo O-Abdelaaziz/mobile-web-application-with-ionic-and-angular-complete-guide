@@ -16,7 +16,7 @@ Ionic provides a set of tools for building native iOS and Android applications, 
 ![](screenshots/angular-framework.png)
 Angular (formerly Angular 2) allows you to create awesome web applications powered by TypeScript / JavaScript. Wouldn't it be great to use that Angular knowledge to build web applications that can be compiled into native mobile apps, running on any iOS or Android device? And also publish them as progressive web apps at the same time.
 
-[⬆ back to top](#mobile-web-application-with-ionic-and-angular-complete-guide)
+[⬆ back to top](#mobile-web-application-with-ionic-capacitor-and-angular-complete-guide)
 
 ## Why Ionic & Angular Frameworks ?
 ![](screenshots/ionic-and-angular.png)
@@ -38,7 +38,7 @@ First-class browser development support means you can build a significant portio
 ###### Enterprise-ready
 Ionic Angular is supported by a company dedicated to enterprise app dev, with supported native plugins, DevOps, expert services, and more.
 
-[⬆ back to top](#mobile-web-application-with-ionic-and-angular-complete-guide)
+[⬆ back to top](#mobile-web-application-with-ionic-capacitor-and-angular-complete-guide)
 
 ## How can Ionic Framework Language help you?
 - User-friendly interface and uses Angular.
@@ -49,7 +49,7 @@ Ionic Angular is supported by a company dedicated to enterprise app dev, with su
 - Streamlined costs of development.
 - Ionic uses Cordova/Capacitor Plugins.
 
-[⬆ back to top](#mobile-web-application-with-ionic-and-angular-complete-guide)
+[⬆ back to top](#mobile-web-application-with-ionic-capacitor-and-angular-complete-guide)
 
 ## How can Ionic Framework Language help you?
 The reasons why the Ionic Framework is the best for mobile app development are:
@@ -60,7 +60,7 @@ The reasons why the Ionic Framework is the best for mobile app development are:
 - **Default UX/UI** : Good UX/UI is a very important feature when it comes to mobile app development. This Framework is preferred by so many because it is said to have some of the top-rated UI interaction features like JS, CSS, HTML, etc.
 - **Easy Testing** : Testing before the product's launch is a crucial step for mobile application development. The Ionic Framework makes this process very easy by enabling testing on desktop as well as other browsers performing stimulator testing Cordova codes for Android and iOS.
 
-[⬆ back to top](#mobile-web-application-with-ionic-and-angular-complete-guide)
+[⬆ back to top](#mobile-web-application-with-ionic-capacitor-and-angular-complete-guide)
 
 ## What exactly are you going to learn then?
 - How To use Angular & Ionic
@@ -75,7 +75,7 @@ The reasons why the Ionic Framework is the best for mobile app development are:
 - How to access the local device storage and native device features like the camera or geolocation.
 - How to configure your app and publish it to the App Store or Google Play Store (or as a progressive web app).
 
-[⬆ back to top](#mobile-web-application-with-ionic-and-angular-complete-guide)
+[⬆ back to top](#mobile-web-application-with-ionic-capacitor-and-angular-complete-guide)
 
 ## License
 

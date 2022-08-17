@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-segment value="all" (ionChange)="segmentChanged($event)">
+  <ion-segment value="all" (ionChange)="segmentChanged(asSegmentChangeEventDetail($event))">
     <ion-segment-button value="all">
       <ion-label>All Places</ion-label>
     </ion-segment-button>

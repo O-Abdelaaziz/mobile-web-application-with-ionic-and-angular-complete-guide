@@ -1,0 +1,10 @@
+to generate (www folder , android folder, sync root assets file to android folder assets)
+ng build
+ionic capacitor add android
+ionic capacitor copy android
+ionic capacitor run android
+ionic capacitor run android -l (live reload)
+
+build app for production.
+ng build --prod
+ionic capacitor sync

@@ -1,0 +1,26 @@
+1- Update appId in capacitor.config.ts
+\place-booking-app\capacitor.config.ts
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.ionic.place.booking.app',
+  appName: 'place-booking-app',
+  webDir: 'www',
+  bundledWebRuntime: false
+};
+
+export default config;
+
+2- Update package name as same in (capacitor.config.ts) in strings.xml
+\place-booking-app\android\app\src\main\res\values\strings.xml
+
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">place-booking-app</string>
+    <string name="title_activity_main">place-booking-app</string>
+    <string name="package_name">com.ionic.place.booking.app</string>
+    <string name="custom_url_scheme">com.ionic.place.booking.app</string>
+</resources>
+
+3-Update package & Permessions in AndroidManifest.xml
+\place-booking-app\android\app\src\main\AndroidManifest.xml

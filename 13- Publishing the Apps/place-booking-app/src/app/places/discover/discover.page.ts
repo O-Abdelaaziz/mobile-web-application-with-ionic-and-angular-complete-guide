@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PlacesService} from '../places.service';
 import {Place} from '../place.model';
-import {SegmentChangeEventDetail} from '@ionic/angular';
+import {SegmentChangeEventDetail} from '@ionic/core';
 import {Subscription} from 'rxjs';
-import {AuthenticationService} from "../../auth/authentication.service";
-import {take} from "rxjs/operators";
+import {AuthenticationService} from '../../auth/authentication.service';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-discover',
@@ -44,7 +44,14 @@ export class DiscoverPage implements OnInit, OnDestroy {
     console.log(this.places);
   }
 
-  segmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
+  //from https://www.damirscorner.com/blog/posts/20220211-CustomEventTypesInIonic.html
+  asSegmentChangeEventDetail(event: Event) {
+    return event as CustomEvent<SegmentChangeEventDetail>;
+  }
+
+  segmentChanged(event: CustomEvent) {
+    console.log(event.detail.value);
+
     this._authService.userId.pipe(
       // take only one
       take(1)
